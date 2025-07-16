@@ -1,0 +1,75 @@
+@AbapCatalog.sqlViewName: 'YMFAVGLANALYSIS'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #NOT_REQUIRED
+@EndUserText.label: 'FBL3N Output for GL Analysis'
+
+define view YMFAV_GL_ANALYSIS
+as select from acdoca
+    left outer join kna1 on acdoca.kunnr = kna1.kunnr
+    left outer join lfa1 on acdoca.lifnr = lfa1.lifnr
+ 
+{
+    acdoca.zuonr,
+    acdoca.belnr,
+    acdoca.co_belnr,
+    acdoca.rbusa,
+    acdoca.blart,
+    acdoca.bldat,
+    acdoca.bschl,
+/*    acdoca.hsl, */
+    case
+        when acdoca.hsl < 0  then CONCAT( '-', cast( ABS( acdoca.hsl ) as char50)) //then -1 * ABS( acdoca.hsl ) //cast( CONCAT('-', cast(ABS( acdoca.hsl ) as char50)) as abap.dec( 25, 5 ) ) //then cast(CONCAT( '-', cast( ABS( acdoca.hsl ) as char50)) as  abap.dec( 25, 2 )) 
+        else cast( acdoca.hsl as char50) //cast( acdoca.hsl as abap.dec( 25, 5 ) ) //cast( acdoca.hsl as abap.dec(10,2) ) //char50
+    end as hsl, 
+    acdoca.sgtxt,
+    acdoca.awref,
+    acdoca.augbl,
+    acdoca.gjahr,
+    acdoca.rebzj,
+    acdoca.gkont,
+    acdoca.lifnr,
+    lfa1.name1       as lifnr_name,
+    acdoca.kunnr,
+    kna1.name1       as kunnr_name,
+/*    case
+        when :p_racct = '' or acdoca.racct = :p_racct then 'X'
+        else ''
+    end as filter_flag, */
+    acdoca.racct, 
+    acdoca.koart,
+    acdoca.hktid,
+    acdoca.rcntr,
+    acdoca.kdgrp,
+    acdoca.poper,
+    acdoca.prctr,
+    acdoca.umskz,
+    acdoca.valut,
+    //acdoca.budat,
+    //concat(  ) as budat,
+    concat(concat(concat(substring(acdoca.budat, 7, 2), '-'), 
+                 concat(substring(acdoca.budat, 5, 2), '-')), 
+           substring(acdoca.budat, 1, 4)) as PostingDate,
+    acdoca.awref_rev,
+    acdoca.awitem_rev,
+    acdoca.usnam,
+    acdoca.sbusa,
+    acdoca.rassc,
+    acdoca.werks,
+    acdoca.ebeln,
+    acdoca.fiscyearper,
+    acdoca.augdt,
+    acdoca.dabrz,
+    acdoca.rldnr
+}
+where
+    acdoca.rldnr = '0L' and
+    acdoca.rbukrs = '1000' and
+    acdoca.gjahr is not initial and
+    acdoca.zuonr is not initial and
+    acdoca.bstat <> 'C' and
+    acdoca.augdt is initial
+/*    and case 
+        when :p_racct = '' or acdoca.racct = :p_racct then 'X'
+        else ''
+    end = 'X'*/
