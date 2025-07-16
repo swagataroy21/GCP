@@ -1,0 +1,64 @@
+CREATE OR REPLACE VIEW `tsl_datalake.FI_TSBDCL.FI_GL_Analysis` AS
+SELECT
+  acdoca.zuonr,
+  acdoca.belnr,
+  acdoca.co_belnr,
+  acdoca.rbusa,
+  acdoca.blart,
+  acdoca.bldat,
+  acdoca.bschl,
+
+  -- Handling negative sign in front for HSL
+  CASE
+    WHEN acdoca.hsl < 0 THEN CONCAT('-', CAST(ABS(acdoca.hsl) AS STRING))
+    ELSE CAST(acdoca.hsl AS STRING)
+  END AS hsl,
+
+  acdoca.sgtxt,
+  acdoca.awref,
+  acdoca.augbl,
+  acdoca.gjahr,
+  acdoca.rebzj,
+  acdoca.gkont,
+  acdoca.lifnr,
+  lfa1.name1 AS lifnr_name,
+  acdoca.kunnr,
+  kna1.name1 AS kunnr_name,
+  acdoca.racct,
+  acdoca.koart,
+  acdoca.hktid,
+  acdoca.rcntr,
+  acdoca.kdgrp,
+  acdoca.poper,
+  acdoca.prctr,
+  acdoca.umskz,
+  acdoca.valut,
+
+  -- Reformatted Posting Date (BUDAT)
+  FORMAT_DATE('%d-%m-%Y', PARSE_DATE('%Y%m%d', acdoca.budat)) AS PostingDate,
+
+  acdoca.awref_rev,
+  acdoca.awitem_rev,
+  acdoca.usnam,
+  acdoca.sbusa,
+  acdoca.rassc,
+  acdoca.werks,
+  acdoca.ebeln,
+  acdoca.fiscyearper,
+  acdoca.augdt,
+  acdoca.dabrz,
+  acdoca.rldnr
+
+FROM `tsl_datalake.FI_TSBDCL.acdoca` acdoca
+LEFT JOIN `tsl_datalake.FI_TSBDCL.kna1` kna1
+  ON acdoca.kunnr = kna1.kunnr
+LEFT JOIN `tsl_datalake.FI_TSBDCL.lfa1` lfa1
+  ON acdoca.lifnr = lfa1.lifnr
+
+WHERE
+  acdoca.rldnr = '0L'
+  AND acdoca.rbukrs = '1000'
+  AND acdoca.gjahr IS NOT NULL
+  AND acdoca.zuonr IS NOT NULL
+  AND acdoca.bstat <> 'C'
+  AND acdoca.augdt IS NULL
