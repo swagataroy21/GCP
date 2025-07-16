@@ -9,11 +9,11 @@ SELECT
   acdoca.bschl,
 
   -- Handling negative sign in front for HSL
-  CASE
-    WHEN acdoca.hsl < 0 THEN CONCAT('-', CAST(ABS(acdoca.hsl) AS STRING))
-    ELSE CAST(acdoca.hsl AS STRING)
-  END AS hsl,
-
+  --CASE
+    --WHEN acdoca.hsl < 0 THEN CONCAT('-', CAST(ABS(acdoca.hsl) AS STRING))
+    --ELSE CAST(acdoca.hsl AS STRING)
+  --END AS hsl,
+  acdoca.hsl,
   acdoca.sgtxt,
   acdoca.awref,
   acdoca.augbl,
