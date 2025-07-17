@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW `tsl_datalake.FI_TSBDCL.FI_GL_Analysis` AS
+CREATE OR REPLACE VIEW `tsl-datalake-prod.FI_TSBDCL.FI_GL_Analysis` AS
 SELECT
   acdoca.zuonr,
   acdoca.belnr,
@@ -49,10 +49,10 @@ SELECT
   acdoca.dabrz,
   acdoca.rldnr
 
-FROM `tsl_datalake.FI_TSBDCL.acdoca` acdoca
-LEFT JOIN `tsl_datalake.FI_TSBDCL.kna1` kna1
+FROM `tsl-datalake-prod.SAP_FI.ACDOCA` acdoca
+LEFT JOIN `tsl-datalake-prod.SAP_LO.KNA1` kna1
   ON acdoca.kunnr = kna1.kunnr
-LEFT JOIN `tsl_datalake.FI_TSBDCL.lfa1` lfa1
+LEFT JOIN `tsl-datalake-prod.SAP_LO.LFA1` lfa1
   ON acdoca.lifnr = lfa1.lifnr
 
 WHERE
